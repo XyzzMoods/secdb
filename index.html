@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Application Control Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<link rel="stylesheet"
+ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box;font-family:'Inter',sans-serif}
+body{margin:0;background:#f3f4f6;color:#111827}
+
+/* LAYOUT */
+.layout{display:flex;min-height:100vh}
+.sidebar{width:220px;background:#fff;border-right:1px solid #e5e7eb;padding:20px}
+.main{flex:1;padding:24px}
+
+/* SIDEBAR */
+.logo{font-size:18px;font-weight:700;color:#2563eb;display:flex;gap:10px;margin-bottom:30px}
+.menu a{display:flex;gap:12px;padding:12px;border-radius:10px;color:#374151;text-decoration:none;margin-bottom:6px}
+.menu a:hover{background:#eef2ff;color:#2563eb}
+
+/* TOPBAR */
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.avatar{width:38px;height:38px;border-radius:50%;background:#2563eb;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
+
+/* ALERT */
+.alert{background:#e0f2fe;color:#0369a1;padding:12px 16px;border-radius:12px;
+display:flex;align-items:center;gap:10px;margin-bottom:20px}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.stat{background:#fff;border-radius:16px;padding:18px;box-shadow:0 8px 20px rgba(0,0,0,.06)}
+.stat i{color:#2563eb;font-size:20px}
+.stat h3{margin:8px 0 4px;font-size:15px}
+.stat p{font-size:12px;color:#6b7280}
+
+/* CONTROL */
+.control{background:#fff;border-radius:20px;padding:24px;box-shadow:0 12px 30px rgba(0,0,0,.08)}
+.buttons{display:flex;gap:14px;margin-bottom:14px}
+button{flex:1;min-height:52px;border:none;border-radius:14px;font-size:15px;font-weight:600;
+display:flex;align-items:center;justify-content:center;gap:10px;color:#fff;cursor:pointer}
+.enable{background:linear-gradient(135deg,#22c55e,#16a34a)}
+.disable{background:linear-gradient(135deg,#ef4444,#b91c1c)}
+
+/* TOGGLE */
+.toggle{margin:16px 0;display:flex;align-items:center;gap:12px}
+.switch{width:52px;height:28px;background:#d1d5db;border-radius:999px;position:relative;cursor:pointer}
+.knob{width:22px;height:22px;background:#fff;border-radius:50%;position:absolute;top:3px;left:4px;transition:.3s}
+.switch.active{background:#22c55e}
+.switch.active .knob{left:26px}
+
+/* STATUS */
+.status{padding:12px;border-radius:12px;background:#f9fafb;font-size:13px;text-align:center}
+
+/* ACTIVITY */
+.activity{margin-top:20px}
+.activity h4{margin-bottom:10px}
+.log{background:#f9fafb;border-radius:12px;padding:12px;font-size:12px;color:#374151}
+.log div{margin-bottom:6px}
+
+/* MOBILE */
+@media(max-width:768px){
+.sidebar{display:none}
+.stats{grid-template-columns:1fr 1fr}
+.buttons{flex-direction:column}
+}
+</style>
+</head>
+
+<body>
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo"><i class="fa-solid fa-shield-halved"></i> Control</div>
+  <div class="menu">
+    <a><i class="fa-solid fa-gauge"></i> Dashboard</a>
+    <a><i class="fa-solid fa-power-off"></i> App Control</a>
+    <a><i class="fa-solid fa-clock"></i> Activity</a>
+    <a><i class="fa-solid fa-gear"></i> Settings</a>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+<div class="topbar">
+  <h2>Application Control</h2>
+  <div class="avatar">K</div>
+</div>
+
+<div class="alert">
+  <i class="fa-solid fa-bell"></i>
+  Remote gate connected. Changes apply instantly.
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><i class="fa-solid fa-globe"></i><h3>Remote</h3><p>DataBase Sync</p></div>
+  <div class="stat"><i class="fa-solid fa-mobile"></i><h3>Builds</h3><p>All Active</p></div>
+  <div class="stat"><i class="fa-solid fa-lock"></i><h3>Security</h3><p>Owner Only</p></div>
+  <div class="stat"><i class="fa-solid fa-signal"></i><h3>Status</h3><p>Online</p></div>
+</div>
+
+<!-- CONTROL -->
+<div class="control">
+  <h3>Base Application Switch</h3>
+  <p style="color:#6b7280;font-size:14px">Control global application access</p>
+
+  <div class="buttons">
+    <button class="enable" onclick="setApp(false)">
+      <i class="fa-solid fa-check"></i> ACTIVATE
+    </button>
+    <button class="disable" onclick="setApp(true)">
+      <i class="fa-solid fa-ban"></i> DEACTIVATE
+    </button>
+  </div>
+
+  <!-- TOGGLE -->
+  <div class="toggle">
+    <div id="sw" class="switch" onclick="toggleSwitch()">
+      <div class="knob"></div>
+    </div>
+    <span>Quick Toggle</span>
+  </div>
+
+  <div class="status" id="status">Status: Ready ✅</div>
+
+  <!-- ACTIVITY -->
+  <div class="activity">
+    <h4>Recent Activity</h4>
+    <div class="log" id="log">
+      <div>• Panel loaded</div>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<script>
+const GITHUB_TOKEN = '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';
+const REPO = 'XyzzMoods/settings';
+const FILE_PATH = 'sec.json';
+
+function addLog(msg) {
+  document.getElementById('log').innerHTML =
+    `<div>• ${msg}</div>` + document.getElementById('log').innerHTML;
+}
+
+function toggleSwitchUI(state) {
+  const sw = document.getElementById('sw');
+  sw.classList.toggle('active', state);
+}
+
+async function setApp(forceValue) {
+  const statusEl = document.getElementById('status');
+  statusEl.innerText = 'Processing...';
+
+  const api = `https://api.github.com/repos/${REPO}/contents/${FILE_PATH}`;
+
+  try {
+    // 1️⃣ GET file dari DataBase
+    const res = await fetch(api, {
+      headers: {
+        Authorization: `Bearer ${GITHUB_TOKEN}`,
+        Accept: 'application/vnd.github+json'
+      }
+    });
+
+    const data = await res.json();
+
+    // 2️⃣ Parse isi sec.json
+    const currentJson = JSON.parse(atob(data.content));
+    const currentError = currentJson.error;
+
+    // 3️⃣ Tentukan nilai baru
+    // kalau tombol kirim true / false → pakai itu
+    // kalau null → toggle otomatis
+    const newError =
+      forceValue !== null ? forceValue : !currentError;
+
+    // 4️⃣ UPDATE ke DataBase
+    await fetch(api, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${GITHUB_TOKEN}`,
+        Accept: 'application/vnd.github+json'
+      },
+      body: JSON.stringify({
+        message: newError
+          ? 'Deactivate application base'
+          : 'Activate application base',
+        content: btoa(
+          JSON.stringify({ error: newError }, null, 2)
+        ),
+        sha: data.sha
+      })
+    });
+
+    // 5️⃣ UPDATE UI
+    statusEl.innerText = newError
+      ? 'Status: APPLICATION DISABLED'
+      : 'Status: APPLICATION ENABLED';
+
+    toggleSwitchUI(!newError);
+
+    addLog(
+      newError
+        ? 'Application disabled'
+        : 'Application enabled'
+    );
+
+  } catch (e) {
+    statusEl.innerText = '❌ Error updating status';
+    addLog('Error updating DataBase');
+  }
+}
+</script>
+
+</body>
+</html>
